@@ -30,7 +30,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                         if (move_uploaded_file($_FILES['image']['tmp_name'], $upload_path)) {
                             $image_url = 'uploads/banners/' . $new_filename;
+                        } else {
+                            echo '<div class="alert alert-danger">Erro ao fazer upload da imagem.</div>';
+                            break;
                         }
+                    } else {
+                        echo '<div class="alert alert-danger">Formato de arquivo não permitido. Use apenas JPG, JPEG, PNG ou GIF.</div>';
+                        break;
                     }
                 } elseif (isset($_POST['image_url'])) {
                     $image_url = sanitize($_POST['image_url']);
@@ -39,32 +45,51 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 if (empty($image_url)) {
                     echo '<div class="alert alert-danger">A imagem é obrigatória.</div>';
                 } else {
-                    if ($_POST['action'] === 'add') {
-                        $stmt = $pdo->prepare("INSERT INTO banners (title, image_url, text, active, display_order) VALUES (?, ?, ?, ?, ?)");
-                        $stmt->execute([$title, $image_url, $text, $active, $order]);
-                        echo '<div class="alert alert-success">Banner adicionado com sucesso!</div>';
-                    } else {
-                        $stmt = $pdo->prepare("UPDATE banners SET title = ?, image_url = ?, text = ?, active = ?, display_order = ? WHERE id = ?");
-                        $stmt->execute([$title, $image_url, $text, $active, $order, $_POST['id']]);
-                        echo '<div class="alert alert-success">Banner atualizado com sucesso!</div>';
+                    try {
+                        if ($_POST['action'] === 'add') {
+                            $stmt = $pdo->prepare("INSERT INTO banners (title, image_url, text, active, display_order) VALUES (?, ?, ?, ?, ?)");
+                            $stmt->execute([$title, $image_url, $text, $active, $order]);
+                            echo '<div class="alert alert-success">Banner adicionado com sucesso!</div>';
+                        } else {
+                            // Se estiver editando, excluir a imagem antiga se houver uma nova
+                            if (isset($_FILES['image']) && $_FILES['image']['error'] === UPLOAD_ERR_OK) {
+                                $stmt = $pdo->prepare("SELECT image_url FROM banners WHERE id = ?");
+                                $stmt->execute([$_POST['id']]);
+                                $old_banner = $stmt->fetch();
+                                
+                                if ($old_banner && file_exists(__DIR__ . '/../' . $old_banner['image_url'])) {
+                                    unlink(__DIR__ . '/../' . $old_banner['image_url']);
+                                }
+                            }
+
+                            $stmt = $pdo->prepare("UPDATE banners SET title = ?, image_url = ?, text = ?, active = ?, display_order = ? WHERE id = ?");
+                            $stmt->execute([$title, $image_url, $text, $active, $order, $_POST['id']]);
+                            echo '<div class="alert alert-success">Banner atualizado com sucesso!</div>';
+                        }
+                    } catch (PDOException $e) {
+                        echo '<div class="alert alert-danger">Erro ao salvar o banner: ' . $e->getMessage() . '</div>';
                     }
                 }
                 break;
 
             case 'delete':
                 if (isset($_POST['id'])) {
-                    // Buscar o banner para excluir a imagem
-                    $stmt = $pdo->prepare("SELECT image_url FROM banners WHERE id = ?");
-                    $stmt->execute([$_POST['id']]);
-                    $banner = $stmt->fetch();
+                    try {
+                        // Buscar o banner para excluir a imagem
+                        $stmt = $pdo->prepare("SELECT image_url FROM banners WHERE id = ?");
+                        $stmt->execute([$_POST['id']]);
+                        $banner = $stmt->fetch();
 
-                    if ($banner && file_exists(__DIR__ . '/../' . $banner['image_url'])) {
-                        unlink(__DIR__ . '/../' . $banner['image_url']);
+                        if ($banner && file_exists(__DIR__ . '/../' . $banner['image_url'])) {
+                            unlink(__DIR__ . '/../' . $banner['image_url']);
+                        }
+
+                        $stmt = $pdo->prepare("DELETE FROM banners WHERE id = ?");
+                        $stmt->execute([$_POST['id']]);
+                        echo '<div class="alert alert-success">Banner excluído com sucesso!</div>';
+                    } catch (PDOException $e) {
+                        echo '<div class="alert alert-danger">Erro ao excluir o banner: ' . $e->getMessage() . '</div>';
                     }
-
-                    $stmt = $pdo->prepare("DELETE FROM banners WHERE id = ?");
-                    $stmt->execute([$_POST['id']]);
-                    echo '<div class="alert alert-success">Banner excluído com sucesso!</div>';
                 }
                 break;
         }
