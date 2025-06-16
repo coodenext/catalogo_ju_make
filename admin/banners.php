@@ -8,20 +8,44 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         switch ($_POST['action']) {
             case 'add':
             case 'edit':
-                $image_url = sanitize($_POST['image_url']);
+                $title = sanitize($_POST['title']);
                 $text = sanitize($_POST['text']);
                 $active = isset($_POST['active']) ? 1 : 0;
+                $order = (int)$_POST['order'];
+
+                // Processar upload de imagem
+                $image_url = '';
+                if (isset($_FILES['image']) && $_FILES['image']['error'] === UPLOAD_ERR_OK) {
+                    $upload_dir = __DIR__ . '/../uploads/banners/';
+                    if (!is_dir($upload_dir)) {
+                        mkdir($upload_dir, 0755, true);
+                    }
+
+                    $file_extension = strtolower(pathinfo($_FILES['image']['name'], PATHINFO_EXTENSION));
+                    $allowed_extensions = ['jpg', 'jpeg', 'png', 'gif'];
+
+                    if (in_array($file_extension, $allowed_extensions)) {
+                        $new_filename = uniqid() . '.' . $file_extension;
+                        $upload_path = $upload_dir . $new_filename;
+
+                        if (move_uploaded_file($_FILES['image']['tmp_name'], $upload_path)) {
+                            $image_url = 'uploads/banners/' . $new_filename;
+                        }
+                    }
+                } elseif (isset($_POST['image_url'])) {
+                    $image_url = sanitize($_POST['image_url']);
+                }
 
                 if (empty($image_url)) {
-                    echo '<div class="alert alert-danger">A URL da imagem é obrigatória.</div>';
+                    echo '<div class="alert alert-danger">A imagem é obrigatória.</div>';
                 } else {
                     if ($_POST['action'] === 'add') {
-                        $stmt = $pdo->prepare("INSERT INTO banners (image_url, text, active) VALUES (?, ?, ?)");
-                        $stmt->execute([$image_url, $text, $active]);
+                        $stmt = $pdo->prepare("INSERT INTO banners (title, image_url, text, active, display_order) VALUES (?, ?, ?, ?, ?)");
+                        $stmt->execute([$title, $image_url, $text, $active, $order]);
                         echo '<div class="alert alert-success">Banner adicionado com sucesso!</div>';
                     } else {
-                        $stmt = $pdo->prepare("UPDATE banners SET image_url = ?, text = ?, active = ? WHERE id = ?");
-                        $stmt->execute([$image_url, $text, $active, $_POST['id']]);
+                        $stmt = $pdo->prepare("UPDATE banners SET title = ?, image_url = ?, text = ?, active = ?, display_order = ? WHERE id = ?");
+                        $stmt->execute([$title, $image_url, $text, $active, $order, $_POST['id']]);
                         echo '<div class="alert alert-success">Banner atualizado com sucesso!</div>';
                     }
                 }
@@ -29,6 +53,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             case 'delete':
                 if (isset($_POST['id'])) {
+                    // Buscar o banner para excluir a imagem
+                    $stmt = $pdo->prepare("SELECT image_url FROM banners WHERE id = ?");
+                    $stmt->execute([$_POST['id']]);
+                    $banner = $stmt->fetch();
+
+                    if ($banner && file_exists(__DIR__ . '/../' . $banner['image_url'])) {
+                        unlink(__DIR__ . '/../' . $banner['image_url']);
+                    }
+
                     $stmt = $pdo->prepare("DELETE FROM banners WHERE id = ?");
                     $stmt->execute([$_POST['id']]);
                     echo '<div class="alert alert-success">Banner excluído com sucesso!</div>';
@@ -47,7 +80,7 @@ if (isset($_GET['action']) && $_GET['action'] === 'edit' && isset($_GET['id'])) 
 }
 
 // Buscar todos os banners
-$stmt = $pdo->query("SELECT * FROM banners ORDER BY created_at DESC");
+$stmt = $pdo->query("SELECT * FROM banners ORDER BY display_order ASC, created_at DESC");
 $banners = $stmt->fetchAll();
 ?>
 
@@ -60,21 +93,37 @@ $banners = $stmt->fetchAll();
                 </h5>
             </div>
             <div class="card-body">
-                <form method="POST" action="">
+                <form method="POST" action="" enctype="multipart/form-data">
                     <input type="hidden" name="action" value="<?php echo $banner ? 'edit' : 'add'; ?>">
                     <?php if ($banner): ?>
                         <input type="hidden" name="id" value="<?php echo $banner['id']; ?>">
                     <?php endif; ?>
 
                     <div class="mb-3">
-                        <label for="image_url" class="form-label">URL da Imagem *</label>
-                        <input type="url" class="form-control" id="image_url" name="image_url" required
-                               value="<?php echo $banner ? $banner['image_url'] : ''; ?>">
+                        <label for="title" class="form-label">Título do Banner *</label>
+                        <input type="text" class="form-control" id="title" name="title" required
+                               value="<?php echo $banner ? $banner['title'] : ''; ?>">
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="image" class="form-label">Imagem do Banner *</label>
+                        <?php if ($banner && $banner['image_url']): ?>
+                            <div class="mb-2">
+                                <img src="<?php echo $banner['image_url']; ?>" alt="Banner atual" class="img-thumbnail" style="max-height: 200px;">
+                            </div>
+                        <?php endif; ?>
+                        <input type="file" class="form-control" id="image" name="image" accept="image/*" <?php echo $banner ? '' : 'required'; ?>>
+                        <small class="text-muted">Formatos aceitos: JPG, JPEG, PNG, GIF. Tamanho máximo: 5MB</small>
                     </div>
 
                     <div class="mb-3">
                         <label for="text" class="form-label">Texto (opcional)</label>
                         <textarea class="form-control" id="text" name="text" rows="3"><?php echo $banner ? $banner['text'] : ''; ?></textarea>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="order" class="form-label">Ordem de Exibição</label>
+                        <input type="number" class="form-control" id="order" name="order" min="1" value="<?php echo $banner ? $banner['display_order'] : '1'; ?>">
                     </div>
 
                     <div class="mb-3">
@@ -109,9 +158,10 @@ $banners = $stmt->fetchAll();
                     <?php foreach ($banners as $b): ?>
                         <div class="col-md-4 mb-4">
                             <div class="card">
-                                <img src="<?php echo $b['image_url']; ?>" class="card-img-top" alt="Banner"
+                                <img src="<?php echo $b['image_url']; ?>" class="card-img-top" alt="<?php echo $b['title']; ?>"
                                      style="height: 200px; object-fit: cover;">
                                 <div class="card-body">
+                                    <h5 class="card-title"><?php echo $b['title']; ?></h5>
                                     <?php if ($b['text']): ?>
                                         <p class="card-text"><?php echo $b['text']; ?></p>
                                     <?php endif; ?>
@@ -121,13 +171,13 @@ $banners = $stmt->fetchAll();
                                         </span>
                                         <div>
                                             <a href="?action=edit&id=<?php echo $b['id']; ?>" class="btn btn-sm btn-primary">
-                                                <i class="bi bi-pencil"></i>
+                                                <i class="bi bi-pencil"></i> Editar
                                             </a>
-                                            <form method="POST" action="" class="d-inline" onsubmit="return confirmDelete()">
+                                            <form method="POST" action="" class="d-inline" onsubmit="return confirm('Tem certeza que deseja excluir este banner?');">
                                                 <input type="hidden" name="action" value="delete">
                                                 <input type="hidden" name="id" value="<?php echo $b['id']; ?>">
                                                 <button type="submit" class="btn btn-sm btn-danger">
-                                                    <i class="bi bi-trash"></i>
+                                                    <i class="bi bi-trash"></i> Excluir
                                                 </button>
                                             </form>
                                         </div>

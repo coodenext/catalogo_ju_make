@@ -5,16 +5,42 @@ require_once 'header.php';
 // Processar formulário
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (isset($_POST['action']) && $_POST['action'] === 'update_settings') {
+        // Processar upload da logomarca
+        if (isset($_FILES['logo']) && $_FILES['logo']['error'] === UPLOAD_ERR_OK) {
+            $upload_dir = __DIR__ . '/../uploads/';
+            if (!is_dir($upload_dir)) {
+                mkdir($upload_dir, 0755, true);
+            }
+
+            $file_extension = strtolower(pathinfo($_FILES['logo']['name'], PATHINFO_EXTENSION));
+            $allowed_extensions = ['jpg', 'jpeg', 'png', 'gif'];
+
+            if (in_array($file_extension, $allowed_extensions)) {
+                $new_filename = 'logo.' . $file_extension;
+                $upload_path = $upload_dir . $new_filename;
+
+                if (move_uploaded_file($_FILES['logo']['tmp_name'], $upload_path)) {
+                    $logo_url = 'uploads/' . $new_filename;
+                    
+                    // Atualizar a configuração da logomarca
+                    $stmt = $pdo->prepare("INSERT INTO settings (setting_key, setting_value) VALUES ('logo_url', ?) ON DUPLICATE KEY UPDATE setting_value = ?");
+                    $stmt->execute([$logo_url, $logo_url]);
+                }
+            }
+        }
+
+        // Atualizar outras configurações
         $settings = [
             'site_name' => sanitize($_POST['site_name']),
             'site_description' => sanitize($_POST['site_description']),
             'whatsapp_number' => sanitize($_POST['whatsapp_number']),
-            'site_logo' => sanitize($_POST['site_logo'])
+            'instagram_url' => sanitize($_POST['instagram_url']),
+            'facebook_url' => sanitize($_POST['facebook_url'])
         ];
 
         foreach ($settings as $key => $value) {
-            $stmt = $pdo->prepare("UPDATE settings SET setting_value = ? WHERE setting_key = ?");
-            $stmt->execute([$value, $key]);
+            $stmt = $pdo->prepare("INSERT INTO settings (setting_key, setting_value) VALUES (?, ?) ON DUPLICATE KEY UPDATE setting_value = ?");
+            $stmt->execute([$key, $value, $value]);
         }
 
         echo '<div class="alert alert-success">Configurações atualizadas com sucesso!</div>';
@@ -36,8 +62,19 @@ while ($row = $stmt->fetch()) {
                 <h5 class="card-title mb-0">Configurações do Site</h5>
             </div>
             <div class="card-body">
-                <form method="POST" action="">
+                <form method="POST" action="" enctype="multipart/form-data">
                     <input type="hidden" name="action" value="update_settings">
+
+                    <div class="mb-3">
+                        <label for="logo" class="form-label">Logomarca</label>
+                        <?php if (isset($settings['logo_url'])): ?>
+                            <div class="mb-2">
+                                <img src="<?php echo $settings['logo_url']; ?>" alt="Logomarca atual" class="img-thumbnail" style="max-height: 100px;">
+                            </div>
+                        <?php endif; ?>
+                        <input type="file" class="form-control" id="logo" name="logo" accept="image/*">
+                        <small class="text-muted">Formatos aceitos: JPG, JPEG, PNG, GIF. Tamanho máximo: 5MB</small>
+                    </div>
 
                     <div class="mb-3">
                         <label for="site_name" class="form-label">Nome do Site</label>
@@ -52,24 +89,21 @@ while ($row = $stmt->fetch()) {
 
                     <div class="mb-3">
                         <label for="whatsapp_number" class="form-label">Número do WhatsApp</label>
-                        <div class="input-group">
-                            <span class="input-group-text">+</span>
-                            <input type="text" class="form-control" id="whatsapp_number" name="whatsapp_number" required
-                                   value="<?php echo $settings['whatsapp_number'] ?? ''; ?>"
-                                   placeholder="Ex: 5511999999999">
-                        </div>
-                        <small class="text-muted">Digite o número com código do país e DDD, sem espaços ou caracteres especiais.</small>
+                        <input type="text" class="form-control" id="whatsapp_number" name="whatsapp_number"
+                               value="<?php echo $settings['whatsapp_number'] ?? ''; ?>"
+                               placeholder="Ex: 5511999999999">
                     </div>
 
                     <div class="mb-3">
-                        <label for="site_logo" class="form-label">URL da Logo</label>
-                        <input type="url" class="form-control" id="site_logo" name="site_logo"
-                               value="<?php echo $settings['site_logo'] ?? ''; ?>">
-                        <?php if (!empty($settings['site_logo'])): ?>
-                            <div class="mt-2">
-                                <img src="<?php echo $settings['site_logo']; ?>" alt="Logo" style="max-height: 100px;">
-                            </div>
-                        <?php endif; ?>
+                        <label for="instagram_url" class="form-label">URL do Instagram</label>
+                        <input type="url" class="form-control" id="instagram_url" name="instagram_url"
+                               value="<?php echo $settings['instagram_url'] ?? ''; ?>">
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="facebook_url" class="form-label">URL do Facebook</label>
+                        <input type="url" class="form-control" id="facebook_url" name="facebook_url"
+                               value="<?php echo $settings['facebook_url'] ?? ''; ?>">
                     </div>
 
                     <button type="submit" class="btn btn-primary">Salvar Configurações</button>

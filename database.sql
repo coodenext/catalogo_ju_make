@@ -34,8 +34,7 @@ CREATE TABLE IF NOT EXISTS banners (
 
 -- Tabela de configurações
 CREATE TABLE IF NOT EXISTS settings (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    setting_key VARCHAR(50) NOT NULL UNIQUE,
+    setting_key VARCHAR(50) PRIMARY KEY,
     setting_value TEXT,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
@@ -47,7 +46,9 @@ INSERT INTO admins (username, password, email) VALUES
 
 -- Inserir configurações padrão
 INSERT INTO settings (setting_key, setting_value) VALUES
-('site_logo', ''),
-('whatsapp_number', '5511999999999'),
-('site_name', 'JU Make'),
-('site_description', 'Catálogo de Produtos JU Make'); 
+('site_name', 'Catálogo Ju Make'),
+('site_description', 'Catálogo de produtos de beleza e maquiagem'),
+('whatsapp_number', ''),
+('instagram_url', ''),
+('facebook_url', '')
+ON DUPLICATE KEY UPDATE setting_value = VALUES(setting_value); 
