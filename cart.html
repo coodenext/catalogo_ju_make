@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Carrinho - JU Make</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #ff69b4;
+            --secondary-color: #ffd700;
+            --text-color: #333;
+            --light-bg: #fff5f8;
+        }
+
+        body {
+            background-color: var(--light-bg);
+            color: var(--text-color);
+        }
+
+        .navbar {
+            background-color: white;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .navbar-brand img {
+            max-height: 50px;
+        }
+
+        .cart-container {
+            background: white;
+            border-radius: 10px;
+            padding: 2rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .cart-item {
+            border-bottom: 1px solid #eee;
+            padding: 1rem 0;
+        }
+
+        .cart-item:last-child {
+            border-bottom: none;
+        }
+
+        .cart-item-image {
+            width: 100px;
+            height: 100px;
+            object-fit: cover;
+            border-radius: 5px;
+        }
+
+        .quantity-input {
+            width: 70px;
+            text-align: center;
+        }
+
+        .btn-primary {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+        }
+
+        .btn-primary:hover {
+            background-color: #ff1493;
+            border-color: #ff1493;
+        }
+
+        .btn-whatsapp {
+            background-color: #25d366;
+            border-color: #25d366;
+            color: white;
+        }
+
+        .btn-whatsapp:hover {
+            background-color: #128c7e;
+            border-color: #128c7e;
+            color: white;
+        }
+
+        .cart-summary {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 1.5rem;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-light">
+        <div class="container">
+            <a class="navbar-brand" href="index.html">
+                <h1>JU Make</h1>
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="cart.html">
+                            <i class="bi bi-cart"></i> Carrinho
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        <div class="cart-container">
+            <h2 class="mb-4">Seu Carrinho</h2>
+
+            <div id="cart-items">
+                <!-- Item do Carrinho -->
+                <div class="cart-item">
+                    <div class="row align-items-center">
+                        <div class="col-md-2">
+                            <img src="https://via.placeholder.com/100" alt="Produto" class="cart-item-image">
+                        </div>
+                        <div class="col-md-4">
+                            <h5>Produto Exemplo 1</h5>
+                            <p class="text-muted mb-0">Código: #123</p>
+                        </div>
+                        <div class="col-md-2">
+                            <span class="h5">R$ 99,90</span>
+                        </div>
+                        <div class="col-md-2">
+                            <input type="number" class="form-control quantity-input" value="1" min="1" onchange="updateQuantity(1, this.value)">
+                        </div>
+                        <div class="col-md-2 text-end">
+                            <button class="btn btn-danger btn-sm" onclick="removeItem(1)">
+                                <i class="bi bi-trash"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Item do Carrinho -->
+                <div class="cart-item">
+                    <div class="row align-items-center">
+                        <div class="col-md-2">
+                            <img src="https://via.placeholder.com/100" alt="Produto" class="cart-item-image">
+                        </div>
+                        <div class="col-md-4">
+                            <h5>Produto Exemplo 2</h5>
+                            <p class="text-muted mb-0">Código: #124</p>
+                        </div>
+                        <div class="col-md-2">
+                            <span class="h5">R$ 149,90</span>
+                        </div>
+                        <div class="col-md-2">
+                            <input type="number" class="form-control quantity-input" value="1" min="1" onchange="updateQuantity(2, this.value)">
+                        </div>
+                        <div class="col-md-2 text-end">
+                            <button class="btn btn-danger btn-sm" onclick="removeItem(2)">
+                                <i class="bi bi-trash"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row mt-4">
+                <div class="col-md-6">
+                    <button class="btn btn-outline-primary" onclick="clearCart()">
+                        <i class="bi bi-trash"></i> Limpar Carrinho
+                    </button>
+                </div>
+                <div class="col-md-6">
+                    <div class="cart-summary">
+                        <h4>Resumo do Pedido</h4>
+                        <div class="d-flex justify-content-between mb-3">
+                            <span>Subtotal:</span>
+                            <span class="h5">R$ 249,80</span>
+                        </div>
+                        <button class="btn btn-whatsapp w-100" onclick="finalizeOrder()">
+                            <i class="bi bi-whatsapp"></i> Finalizar Pedido pelo WhatsApp
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        function updateQuantity(productId, quantity) {
+            alert(`Quantidade do produto ${productId} atualizada para ${quantity}`);
+        }
+
+        function removeItem(productId) {
+            if (confirm('Deseja remover este item do carrinho?')) {
+                alert(`Produto ${productId} removido do carrinho`);
+            }
+        }
+
+        function clearCart() {
+            if (confirm('Deseja limpar o carrinho?')) {
+                alert('Carrinho limpo com sucesso!');
+            }
+        }
+
+        function finalizeOrder() {
+            const items = [
+                { name: 'Produto Exemplo 1', price: '99,90', quantity: 1 },
+                { name: 'Produto Exemplo 2', price: '149,90', quantity: 1 }
+            ];
+            const total = '249,80';
+            const whatsappNumber = '5511999999999';
+            
+            let message = 'Olá! Gostaria de finalizar meu pedido:\n\n';
+            items.forEach(item => {
+                message += `*${item.name}*\n`;
+                message += `Quantidade: ${item.quantity}\n`;
+                message += `Preço: R$ ${item.price}\n\n`;
+            });
+            message += `*Total: R$ ${total}*`;
+            
+            const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`;
+            window.open(whatsappUrl, '_blank');
+        }
+    </script>
+</body>
+</html> 
