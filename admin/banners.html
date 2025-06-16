@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Banners - Painel Administrativo</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #ff69b4;
+            --secondary-color: #ffd700;
+            --text-color: #333;
+            --light-bg: #fff5f8;
+        }
+
+        body {
+            background-color: var(--light-bg);
+            color: var(--text-color);
+        }
+
+        .sidebar {
+            background: white;
+            min-height: 100vh;
+            box-shadow: 2px 0 4px rgba(0,0,0,0.1);
+        }
+
+        .sidebar .nav-link {
+            color: var(--text-color);
+            padding: 0.8rem 1rem;
+            border-radius: 0.25rem;
+            margin: 0.2rem 0;
+        }
+
+        .sidebar .nav-link:hover,
+        .sidebar .nav-link.active {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .sidebar .nav-link i {
+            margin-right: 0.5rem;
+        }
+
+        .main-content {
+            padding: 2rem;
+        }
+
+        .card {
+            border: none;
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .card-header {
+            background-color: white;
+            border-bottom: 1px solid #eee;
+            padding: 1rem;
+        }
+
+        .btn-primary {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+        }
+
+        .btn-primary:hover {
+            background-color: #ff1493;
+            border-color: #ff1493;
+        }
+
+        .banner-preview {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 5px;
+            margin-bottom: 1rem;
+        }
+
+        .banner-card {
+            transition: transform 0.2s;
+        }
+
+        .banner-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .modal-header {
+            border-bottom: 1px solid #eee;
+        }
+
+        .modal-footer {
+            border-top: 1px solid #eee;
+        }
+    </style>
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Sidebar -->
+            <div class="col-md-3 col-lg-2 px-0 sidebar">
+                <div class="p-3">
+                    <h4 class="mb-4">JU Make</h4>
+                    <nav class="nav flex-column">
+                        <a class="nav-link" href="index.html">
+                            <i class="bi bi-house"></i> Dashboard
+                        </a>
+                        <a class="nav-link" href="products.html">
+                            <i class="bi bi-box"></i> Produtos
+                        </a>
+                        <a class="nav-link active" href="banners.html">
+                            <i class="bi bi-image"></i> Banners
+                        </a>
+                        <a class="nav-link" href="orders.html">
+                            <i class="bi bi-cart"></i> Pedidos
+                        </a>
+                        <a class="nav-link" href="settings.html">
+                            <i class="bi bi-gear"></i> Configurações
+                        </a>
+                        <a class="nav-link text-danger" href="login.html">
+                            <i class="bi bi-box-arrow-right"></i> Sair
+                        </a>
+                    </nav>
+                </div>
+            </div>
+
+            <!-- Main Content -->
+            <div class="col-md-9 col-lg-10 main-content">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h2>Banners</h2>
+                    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#bannerModal">
+                        <i class="bi bi-plus"></i> Novo Banner
+                    </button>
+                </div>
+
+                <!-- Banners Grid -->
+                <div class="row">
+                    <!-- Banner Card 1 -->
+                    <div class="col-md-6 col-lg-4 mb-4">
+                        <div class="card banner-card">
+                            <img src="https://via.placeholder.com/600x300" class="banner-preview" alt="Banner 1">
+                            <div class="card-body">
+                                <h5 class="card-title">Banner Principal</h5>
+                                <p class="card-text">
+                                    <span class="badge bg-success">Ativo</span>
+                                    <small class="text-muted d-block mt-2">Atualizado em: 01/01/2024</small>
+                                </p>
+                                <div class="btn-group w-100">
+                                    <button class="btn btn-primary" onclick="editBanner(1)">
+                                        <i class="bi bi-pencil"></i> Editar
+                                    </button>
+                                    <button class="btn btn-danger" onclick="deleteBanner(1)">
+                                        <i class="bi bi-trash"></i> Excluir
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Banner Card 2 -->
+                    <div class="col-md-6 col-lg-4 mb-4">
+                        <div class="card banner-card">
+                            <img src="https://via.placeholder.com/600x300" class="banner-preview" alt="Banner 2">
+                            <div class="card-body">
+                                <h5 class="card-title">Banner Promocional</h5>
+                                <p class="card-text">
+                                    <span class="badge bg-warning">Inativo</span>
+                                    <small class="text-muted d-block mt-2">Atualizado em: 15/01/2024</small>
+                                </p>
+                                <div class="btn-group w-100">
+                                    <button class="btn btn-primary" onclick="editBanner(2)">
+                                        <i class="bi bi-pencil"></i> Editar
+                                    </button>
+                                    <button class="btn btn-danger" onclick="deleteBanner(2)">
+                                        <i class="bi bi-trash"></i> Excluir
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Banner Modal -->
+    <div class="modal fade" id="bannerModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Novo Banner</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="bannerForm">
+                        <div class="mb-3">
+                            <label class="form-label">Título do Banner</label>
+                            <input type="text" class="form-control" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">URL da Imagem</label>
+                            <input type="url" class="form-control" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Link de Destino</label>
+                            <input type="url" class="form-control">
+                        </div>
+                        <div class="mb-3">
+                            <div class="form-check">
+                                <input type="checkbox" class="form-check-input" id="activeCheck">
+                                <label class="form-check-label" for="activeCheck">Banner Ativo</label>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Ordem de Exibição</label>
+                            <input type="number" class="form-control" min="1" value="1">
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-primary" onclick="saveBanner()">Salvar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        function editBanner(id) {
+            // Aqui você pode implementar a lógica para editar o banner
+            const modal = new bootstrap.Modal(document.getElementById('bannerModal'));
+            modal.show();
+        }
+
+        function deleteBanner(id) {
+            if (confirm('Tem certeza que deseja excluir este banner?')) {
+                // Aqui você pode implementar a lógica para excluir o banner
+                alert('Banner excluído com sucesso!');
+            }
+        }
+
+        function saveBanner() {
+            // Aqui você pode implementar a lógica para salvar o banner
+            const modal = bootstrap.Modal.getInstance(document.getElementById('bannerModal'));
+            modal.hide();
+            alert('Banner salvo com sucesso!');
+        }
+    </script>
+</body>
+</html> 

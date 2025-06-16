@@ -185,41 +185,114 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
+        // Função para gerenciar o carrinho no localStorage
+        function getCart() {
+            const cart = localStorage.getItem('cart');
+            return cart ? JSON.parse(cart) : [];
+        }
+
+        function saveCart(cart) {
+            localStorage.setItem('cart', JSON.stringify(cart));
+            updateCartDisplay();
+        }
+
+        function updateCartDisplay() {
+            const cart = getCart();
+            const cartItems = document.getElementById('cart-items');
+            const subtotalElement = document.querySelector('.cart-summary .h5');
+            
+            if (cart.length === 0) {
+                cartItems.innerHTML = '<div class="text-center py-4"><p>Seu carrinho está vazio</p></div>';
+                subtotalElement.textContent = 'R$ 0,00';
+                return;
+            }
+
+            let total = 0;
+            cartItems.innerHTML = cart.map(item => {
+                const itemTotal = parseFloat(item.price.replace(',', '.')) * item.quantity;
+                total += itemTotal;
+                
+                return `
+                    <div class="cart-item">
+                        <div class="row align-items-center">
+                            <div class="col-md-2">
+                                <img src="${item.image}" alt="${item.name}" class="cart-item-image">
+                            </div>
+                            <div class="col-md-4">
+                                <h5>${item.name}</h5>
+                                <p class="text-muted mb-0">Código: #${item.id}</p>
+                            </div>
+                            <div class="col-md-2">
+                                <span class="h5">R$ ${item.price}</span>
+                            </div>
+                            <div class="col-md-2">
+                                <input type="number" class="form-control quantity-input" value="${item.quantity}" min="1" onchange="updateQuantity(${item.id}, this.value)">
+                            </div>
+                            <div class="col-md-2 text-end">
+                                <button class="btn btn-danger btn-sm" onclick="removeItem(${item.id})">
+                                    <i class="bi bi-trash"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            subtotalElement.textContent = `R$ ${total.toFixed(2).replace('.', ',')}`;
+        }
+
         function updateQuantity(productId, quantity) {
-            alert(`Quantidade do produto ${productId} atualizada para ${quantity}`);
+            const cart = getCart();
+            const item = cart.find(item => item.id === productId);
+            
+            if (item) {
+                item.quantity = parseInt(quantity);
+                saveCart(cart);
+            }
         }
 
         function removeItem(productId) {
             if (confirm('Deseja remover este item do carrinho?')) {
-                alert(`Produto ${productId} removido do carrinho`);
+                const cart = getCart();
+                const newCart = cart.filter(item => item.id !== productId);
+                saveCart(newCart);
             }
         }
 
         function clearCart() {
             if (confirm('Deseja limpar o carrinho?')) {
-                alert('Carrinho limpo com sucesso!');
+                saveCart([]);
             }
         }
 
         function finalizeOrder() {
-            const items = [
-                { name: 'Produto Exemplo 1', price: '99,90', quantity: 1 },
-                { name: 'Produto Exemplo 2', price: '149,90', quantity: 1 }
-            ];
-            const total = '249,80';
+            const cart = getCart();
+            if (cart.length === 0) {
+                alert('Seu carrinho está vazio!');
+                return;
+            }
+
             const whatsappNumber = '5511999999999';
-            
             let message = 'Olá! Gostaria de finalizar meu pedido:\n\n';
-            items.forEach(item => {
+            let total = 0;
+
+            cart.forEach(item => {
+                const itemTotal = parseFloat(item.price.replace(',', '.')) * item.quantity;
+                total += itemTotal;
+                
                 message += `*${item.name}*\n`;
                 message += `Quantidade: ${item.quantity}\n`;
                 message += `Preço: R$ ${item.price}\n\n`;
             });
-            message += `*Total: R$ ${total}*`;
+            
+            message += `*Total: R$ ${total.toFixed(2).replace('.', ',')}*`;
             
             const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`;
             window.open(whatsappUrl, '_blank');
         }
+
+        // Inicializa o carrinho quando a página carrega
+        document.addEventListener('DOMContentLoaded', updateCartDisplay);
     </script>
 </body>
 </html> 

@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pedidos - Painel Administrativo</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #ff69b4;
+            --secondary-color: #ffd700;
+            --text-color: #333;
+            --light-bg: #fff5f8;
+        }
+
+        body {
+            background-color: var(--light-bg);
+            color: var(--text-color);
+        }
+
+        .sidebar {
+            background: white;
+            min-height: 100vh;
+            box-shadow: 2px 0 4px rgba(0,0,0,0.1);
+        }
+
+        .sidebar .nav-link {
+            color: var(--text-color);
+            padding: 0.8rem 1rem;
+            border-radius: 0.25rem;
+            margin: 0.2rem 0;
+        }
+
+        .sidebar .nav-link:hover,
+        .sidebar .nav-link.active {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .sidebar .nav-link i {
+            margin-right: 0.5rem;
+        }
+
+        .main-content {
+            padding: 2rem;
+        }
+
+        .card {
+            border: none;
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .card-header {
+            background-color: white;
+            border-bottom: 1px solid #eee;
+            padding: 1rem;
+        }
+
+        .table th {
+            border-top: none;
+            background-color: #f8f9fa;
+        }
+
+        .btn-primary {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+        }
+
+        .btn-primary:hover {
+            background-color: #ff1493;
+            border-color: #ff1493;
+        }
+
+        .order-status {
+            padding: 0.25rem 0.5rem;
+            border-radius: 0.25rem;
+            font-size: 0.875rem;
+        }
+
+        .status-pending {
+            background-color: #fff3cd;
+            color: #856404;
+        }
+
+        .status-confirmed {
+            background-color: #d4edda;
+            color: #155724;
+        }
+
+        .status-cancelled {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+
+        .status-delivered {
+            background-color: #cce5ff;
+            color: #004085;
+        }
+
+        .modal-header {
+            border-bottom: 1px solid #eee;
+        }
+
+        .modal-footer {
+            border-top: 1px solid #eee;
+        }
+    </style>
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Sidebar -->
+            <div class="col-md-3 col-lg-2 px-0 sidebar">
+                <div class="p-3">
+                    <h4 class="mb-4">JU Make</h4>
+                    <nav class="nav flex-column">
+                        <a class="nav-link" href="index.html">
+                            <i class="bi bi-house"></i> Dashboard
+                        </a>
+                        <a class="nav-link" href="products.html">
+                            <i class="bi bi-box"></i> Produtos
+                        </a>
+                        <a class="nav-link" href="banners.html">
+                            <i class="bi bi-image"></i> Banners
+                        </a>
+                        <a class="nav-link active" href="orders.html">
+                            <i class="bi bi-cart"></i> Pedidos
+                        </a>
+                        <a class="nav-link" href="settings.html">
+                            <i class="bi bi-gear"></i> Configurações
+                        </a>
+                        <a class="nav-link text-danger" href="login.html">
+                            <i class="bi bi-box-arrow-right"></i> Sair
+                        </a>
+                    </nav>
+                </div>
+            </div>
+
+            <!-- Main Content -->
+            <div class="col-md-9 col-lg-10 main-content">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h2>Pedidos</h2>
+                    <div class="btn-group">
+                        <button class="btn btn-outline-primary active">Todos</button>
+                        <button class="btn btn-outline-primary">Pendentes</button>
+                        <button class="btn btn-outline-primary">Confirmados</button>
+                        <button class="btn btn-outline-primary">Entregues</button>
+                    </div>
+                </div>
+
+                <!-- Search and Filter -->
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <form class="row g-3">
+                            <div class="col-md-4">
+                                <input type="text" class="form-control" placeholder="Buscar pedidos...">
+                            </div>
+                            <div class="col-md-3">
+                                <input type="date" class="form-control">
+                            </div>
+                            <div class="col-md-3">
+                                <select class="form-select">
+                                    <option value="">Todos os Status</option>
+                                    <option value="pending">Pendente</option>
+                                    <option value="confirmed">Confirmado</option>
+                                    <option value="cancelled">Cancelado</option>
+                                    <option value="delivered">Entregue</option>
+                                </select>
+                            </div>
+                            <div class="col-md-2">
+                                <button type="submit" class="btn btn-primary w-100">
+                                    <i class="bi bi-search"></i> Buscar
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Orders Table -->
+                <div class="card">
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Cliente</th>
+                                        <th>Data</th>
+                                        <th>Total</th>
+                                        <th>Status</th>
+                                        <th>Ações</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>#1234</td>
+                                        <td>Maria Silva</td>
+                                        <td>01/01/2024</td>
+                                        <td>R$ 199,90</td>
+                                        <td><span class="order-status status-pending">Pendente</span></td>
+                                        <td>
+                                            <button class="btn btn-sm btn-primary" onclick="viewOrder(1234)">
+                                                <i class="bi bi-eye"></i>
+                                            </button>
+                                            <button class="btn btn-sm btn-success" onclick="updateStatus(1234, 'confirmed')">
+                                                <i class="bi bi-check"></i>
+                                            </button>
+                                            <button class="btn btn-sm btn-danger" onclick="updateStatus(1234, 'cancelled')">
+                                                <i class="bi bi-x"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>#1235</td>
+                                        <td>João Santos</td>
+                                        <td>02/01/2024</td>
+                                        <td>R$ 299,90</td>
+                                        <td><span class="order-status status-confirmed">Confirmado</span></td>
+                                        <td>
+                                            <button class="btn btn-sm btn-primary" onclick="viewOrder(1235)">
+                                                <i class="bi bi-eye"></i>
+                                            </button>
+                                            <button class="btn btn-sm btn-success" onclick="updateStatus(1235, 'delivered')">
+                                                <i class="bi bi-check"></i>
+                                            </button>
+                                            <button class="btn btn-sm btn-danger" onclick="updateStatus(1235, 'cancelled')">
+                                                <i class="bi bi-x"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Order Details Modal -->
+    <div class="modal fade" id="orderModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Detalhes do Pedido #1234</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <h6>Informações do Cliente</h6>
+                            <p>
+                                <strong>Nome:</strong> Maria Silva<br>
+                                <strong>Email:</strong> maria@email.com<br>
+                                <strong>Telefone:</strong> (11) 99999-9999
+                            </p>
+                        </div>
+                        <div class="col-md-6">
+                            <h6>Status do Pedido</h6>
+                            <p>
+                                <strong>Data:</strong> 01/01/2024<br>
+                                <strong>Status:</strong> <span class="order-status status-pending">Pendente</span><br>
+                                <strong>Forma de Pagamento:</strong> PIX
+                            </p>
+                        </div>
+                    </div>
+
+                    <h6>Itens do Pedido</h6>
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Produto</th>
+                                <th>Quantidade</th>
+                                <th>Preço Unitário</th>
+                                <th>Total</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Produto 1</td>
+                                <td>2</td>
+                                <td>R$ 49,90</td>
+                                <td>R$ 99,80</td>
+                            </tr>
+                            <tr>
+                                <td>Produto 2</td>
+                                <td>1</td>
+                                <td>R$ 100,10</td>
+                                <td>R$ 100,10</td>
+                            </tr>
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <td colspan="3" class="text-end"><strong>Total:</strong></td>
+                                <td><strong>R$ 199,90</strong></td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+                    <button type="button" class="btn btn-success" onclick="updateStatus(1234, 'confirmed')">
+                        Confirmar Pedido
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        function viewOrder(id) {
+            // Aqui você pode implementar a lógica para visualizar o pedido
+            const modal = new bootstrap.Modal(document.getElementById('orderModal'));
+            modal.show();
+        }
+
+        function updateStatus(id, status) {
+            if (confirm('Tem certeza que deseja atualizar o status deste pedido?')) {
+                // Aqui você pode implementar a lógica para atualizar o status
+                alert('Status atualizado com sucesso!');
+            }
+        }
+    </script>
+</body>
+</html> 

@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Painel Administrativo</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #ff69b4;
+            --secondary-color: #ffd700;
+            --text-color: #333;
+            --light-bg: #fff5f8;
+        }
+
+        body {
+            background-color: var(--light-bg);
+            color: var(--text-color);
+        }
+
+        .sidebar {
+            background: white;
+            min-height: 100vh;
+            box-shadow: 2px 0 4px rgba(0,0,0,0.1);
+        }
+
+        .sidebar .nav-link {
+            color: var(--text-color);
+            padding: 0.8rem 1rem;
+            border-radius: 0.25rem;
+            margin: 0.2rem 0;
+        }
+
+        .sidebar .nav-link:hover,
+        .sidebar .nav-link.active {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .sidebar .nav-link i {
+            margin-right: 0.5rem;
+        }
+
+        .main-content {
+            padding: 2rem;
+        }
+
+        .card {
+            border: none;
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .card-header {
+            background-color: white;
+            border-bottom: 1px solid #eee;
+            padding: 1rem;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            transition: transform 0.2s;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .stat-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .stat-icon.products {
+            background-color: #e3f2fd;
+            color: #1976d2;
+        }
+
+        .stat-icon.orders {
+            background-color: #e8f5e9;
+            color: #2e7d32;
+        }
+
+        .stat-icon.revenue {
+            background-color: #fff3e0;
+            color: #f57c00;
+        }
+
+        .stat-icon.customers {
+            background-color: #fce4ec;
+            color: #c2185b;
+        }
+
+        .btn-primary {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+        }
+
+        .btn-primary:hover {
+            background-color: #ff1493;
+            border-color: #ff1493;
+        }
+
+        .table th {
+            border-top: none;
+            background-color: #f8f9fa;
+        }
+
+        .chart-container {
+            position: relative;
+            height: 300px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Sidebar -->
+            <div class="col-md-3 col-lg-2 px-0 sidebar">
+                <div class="p-3">
+                    <h4 class="mb-4">JU Make</h4>
+                    <nav class="nav flex-column">
+                        <a class="nav-link active" href="index.html">
+                            <i class="bi bi-house"></i> Dashboard
+                        </a>
+                        <a class="nav-link" href="products.html">
+                            <i class="bi bi-box"></i> Produtos
+                        </a>
+                        <a class="nav-link" href="banners.html">
+                            <i class="bi bi-image"></i> Banners
+                        </a>
+                        <a class="nav-link" href="orders.html">
+                            <i class="bi bi-cart"></i> Pedidos
+                        </a>
+                        <a class="nav-link" href="settings.html">
+                            <i class="bi bi-gear"></i> Configurações
+                        </a>
+                        <a class="nav-link text-danger" href="login.html">
+                            <i class="bi bi-box-arrow-right"></i> Sair
+                        </a>
+                    </nav>
+                </div>
+            </div>
+
+            <!-- Main Content -->
+            <div class="col-md-9 col-lg-10 main-content">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h2>Dashboard</h2>
+                    <div class="btn-group">
+                        <button class="btn btn-outline-primary active">Hoje</button>
+                        <button class="btn btn-outline-primary">7 Dias</button>
+                        <button class="btn btn-outline-primary">30 Dias</button>
+                    </div>
+                </div>
+
+                <!-- Statistics Cards -->
+                <div class="row">
+                    <div class="col-md-6 col-lg-3">
+                        <div class="stat-card">
+                            <div class="stat-icon products">
+                                <i class="bi bi-box"></i>
+                            </div>
+                            <h3>150</h3>
+                            <p class="text-muted mb-0">Total de Produtos</p>
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-lg-3">
+                        <div class="stat-card">
+                            <div class="stat-icon orders">
+                                <i class="bi bi-cart"></i>
+                            </div>
+                            <h3>25</h3>
+                            <p class="text-muted mb-0">Pedidos Pendentes</p>
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-lg-3">
+                        <div class="stat-card">
+                            <div class="stat-icon revenue">
+                                <i class="bi bi-currency-dollar"></i>
+                            </div>
+                            <h3>R$ 5.000</h3>
+                            <p class="text-muted mb-0">Receita do Mês</p>
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-lg-3">
+                        <div class="stat-card">
+                            <div class="stat-icon customers">
+                                <i class="bi bi-people"></i>
+                            </div>
+                            <h3>100</h3>
+                            <p class="text-muted mb-0">Novos Clientes</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Charts and Tables -->
+                <div class="row mt-4">
+                    <!-- Sales Chart -->
+                    <div class="col-lg-8">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5 class="card-title mb-0">Vendas</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="chart-container">
+                                    <canvas id="salesChart"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Recent Orders -->
+                    <div class="col-lg-4">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5 class="card-title mb-0">Pedidos Recentes</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="table-responsive">
+                                    <table class="table">
+                                        <thead>
+                                            <tr>
+                                                <th>ID</th>
+                                                <th>Cliente</th>
+                                                <th>Total</th>
+                                                <th>Status</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td>#1234</td>
+                                                <td>Maria Silva</td>
+                                                <td>R$ 199,90</td>
+                                                <td><span class="badge bg-warning">Pendente</span></td>
+                                            </tr>
+                                            <tr>
+                                                <td>#1233</td>
+                                                <td>João Santos</td>
+                                                <td>R$ 299,90</td>
+                                                <td><span class="badge bg-success">Confirmado</span></td>
+                                            </tr>
+                                            <tr>
+                                                <td>#1232</td>
+                                                <td>Ana Oliveira</td>
+                                                <td>R$ 149,90</td>
+                                                <td><span class="badge bg-info">Entregue</span></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Low Stock Products -->
+                <div class="row mt-4">
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5 class="card-title mb-0">Produtos com Estoque Baixo</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="table-responsive">
+                                    <table class="table">
+                                        <thead>
+                                            <tr>
+                                                <th>Produto</th>
+                                                <th>Estoque Atual</th>
+                                                <th>Estoque Mínimo</th>
+                                                <th>Status</th>
+                                                <th>Ações</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td>Produto 1</td>
+                                                <td>5</td>
+                                                <td>10</td>
+                                                <td><span class="badge bg-danger">Crítico</span></td>
+                                                <td>
+                                                    <button class="btn btn-sm btn-primary">
+                                                        <i class="bi bi-pencil"></i> Editar
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>Produto 2</td>
+                                                <td>8</td>
+                                                <td>10</td>
+                                                <td><span class="badge bg-warning">Baixo</span></td>
+                                                <td>
+                                                    <button class="btn btn-sm btn-primary">
+                                                        <i class="bi bi-pencil"></i> Editar
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        // Configuração do gráfico de vendas
+        const ctx = document.getElementById('salesChart').getContext('2d');
+        const salesChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun'],
+                datasets: [{
+                    label: 'Vendas',
+                    data: [1200, 1900, 1500, 2100, 1800, 2500],
+                    borderColor: '#ff69b4',
+                    tension: 0.4,
+                    fill: false
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html> 
