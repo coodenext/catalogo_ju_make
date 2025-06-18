@@ -3,298 +3,91 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>JU Make - Catálogo de Produtos</title>
+    <title>Catálogo Ju Make</title>
+    <link rel="stylesheet" href="css/style.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css" rel="stylesheet">
-    <style>
-        :root {
-            --primary-color: #ff69b4;
-            --secondary-color: #ffd700;
-            --text-color: #333;
-            --light-bg: #fff5f8;
-        }
-
-        body {
-            background-color: var(--light-bg);
-            color: var(--text-color);
-        }
-
-        .navbar {
-            background-color: white;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
-
-        .navbar-brand img {
-            max-height: 50px;
-        }
-
-        .banner-carousel {
-            margin-bottom: 2rem;
-        }
-
-        .carousel-item img {
-            height: 400px;
-            object-fit: cover;
-        }
-
-        .search-box {
-            background: white;
-            padding: 2rem;
-            border-radius: 10px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            margin-bottom: 2rem;
-        }
-
-        .product-card {
-            background: white;
-            border-radius: 10px;
-            overflow: hidden;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            transition: transform 0.3s ease;
-        }
-
-        .product-card:hover {
-            transform: translateY(-5px);
-        }
-
-        .product-image {
-            width: 100%;
-            height: 200px;
-            object-fit: cover;
-        }
-
-        .product-price {
-            color: var(--primary-color);
-            font-size: 1.25rem;
-            font-weight: bold;
-        }
-
-        .btn-primary {
-            background-color: var(--primary-color);
-            border-color: var(--primary-color);
-        }
-
-        .btn-primary:hover {
-            background-color: #ff1493;
-            border-color: #ff1493;
-        }
-
-        .btn-whatsapp {
-            background-color: #25d366;
-            border-color: #25d366;
-            color: white;
-        }
-
-        .btn-whatsapp:hover {
-            background-color: #128c7e;
-            border-color: #128c7e;
-            color: white;
-        }
-    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
-    <!-- Navbar -->
-    <nav class="navbar navbar-expand-lg navbar-light">
+    <!-- Header com Logo -->
+    <header class="header">
         <div class="container">
-            <a class="navbar-brand" href="index.html">
-                <h1>JU Make</h1>
-            </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto">
-                    <li class="nav-item">
-                        <a class="nav-link" href="cart.html">
-                            <i class="bi bi-cart"></i> Carrinho
-                        </a>
-                    </li>
-                </ul>
+            <div class="logo-container">
+                <img id="store-logo" src="images/default-logo.png" alt="Logo da Loja">
             </div>
         </div>
-    </nav>
+    </header>
 
-    <!-- Banner Carousel -->
+    <!-- Carrossel de Banners -->
+    <div id="bannerCarousel" class="carousel slide" data-bs-ride="carousel">
+        <div class="carousel-inner" id="bannerContainer">
+            <!-- Banners serão inseridos via JavaScript -->
+        </div>
+        <button class="carousel-control-prev" type="button" data-bs-target="#bannerCarousel" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon"></span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#bannerCarousel" data-bs-slide="next">
+            <span class="carousel-control-next-icon"></span>
+        </button>
+    </div>
+
+    <!-- Barra de Busca -->
     <div class="container mt-4">
-        <div id="bannerCarousel" class="carousel slide banner-carousel" data-bs-ride="carousel">
-            <div class="carousel-indicators">
-                <button type="button" data-bs-target="#bannerCarousel" data-bs-slide-to="0" class="active"></button>
-                <button type="button" data-bs-target="#bannerCarousel" data-bs-slide-to="1"></button>
-                <button type="button" data-bs-target="#bannerCarousel" data-bs-slide-to="2"></button>
-            </div>
-            <div class="carousel-inner">
-                <div class="carousel-item active">
-                    <img src="https://via.placeholder.com/1200x400" class="d-block w-100" alt="Banner 1">
-                </div>
-                <div class="carousel-item">
-                    <img src="https://via.placeholder.com/1200x400" class="d-block w-100" alt="Banner 2">
-                </div>
-                <div class="carousel-item">
-                    <img src="https://via.placeholder.com/1200x400" class="d-block w-100" alt="Banner 3">
-                </div>
-            </div>
-            <button class="carousel-control-prev" type="button" data-bs-target="#bannerCarousel" data-bs-slide="prev">
-                <span class="carousel-control-prev-icon"></span>
-            </button>
-            <button class="carousel-control-next" type="button" data-bs-target="#bannerCarousel" data-bs-slide="next">
-                <span class="carousel-control-next-icon"></span>
-            </button>
+        <div class="search-container">
+            <input type="text" id="searchInput" class="form-control" placeholder="Buscar produtos...">
         </div>
+    </div>
 
-        <!-- Search Box -->
-        <div class="search-box">
-            <form class="row g-3">
-                <div class="col-md-10">
-                    <input type="text" class="form-control" placeholder="Buscar produtos...">
-                </div>
-                <div class="col-md-2">
-                    <button type="submit" class="btn btn-primary w-100">
-                        <i class="bi bi-search"></i> Buscar
-                    </button>
-                </div>
-            </form>
+    <!-- Lista de Produtos -->
+    <div class="container mt-4">
+        <div class="row" id="productsContainer">
+            <!-- Produtos serão inseridos via JavaScript -->
         </div>
+    </div>
 
-        <!-- Products Grid -->
-        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
-            <!-- Product Card -->
-            <div class="col">
-                <div class="product-card h-100">
-                    <img src="https://via.placeholder.com/300x200" class="product-image" alt="Produto 1">
-                    <div class="p-3">
-                        <h5>Produto Exemplo 1</h5>
-                        <p class="text-muted">Descrição curta do produto...</p>
-                        <div class="d-flex justify-content-between align-items-center mb-3">
-                            <span class="product-price">R$ 99,90</span>
-                            <span class="badge bg-success">Em Estoque</span>
-                        </div>
-                        <div class="d-grid gap-2">
-                            <a href="product.html" class="btn btn-primary">
-                                <i class="bi bi-eye"></i> Ver Detalhes
-                            </a>
-                            <button class="btn btn-whatsapp" onclick="buyOnWhatsApp(1)">
-                                <i class="bi bi-whatsapp"></i> Comprar pelo WhatsApp
-                            </button>
-                            <button class="btn btn-outline-primary" onclick="addToCart(1)">
-                                <i class="bi bi-cart-plus"></i> Adicionar ao Carrinho
-                            </button>
-                        </div>
-                    </div>
+    <!-- Carrinho de Compras -->
+    <div class="cart-container">
+        <button class="cart-button" id="cartButton">
+            <i class="fas fa-shopping-cart"></i>
+            <span id="cartCount">0</span>
+        </button>
+    </div>
+
+    <!-- Modal de Detalhes do Produto -->
+    <div class="modal fade" id="productModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Detalhes do Produto</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body" id="productModalBody">
+                    <!-- Conteúdo será inserido via JavaScript -->
                 </div>
             </div>
+        </div>
+    </div>
 
-            <!-- Product Card -->
-            <div class="col">
-                <div class="product-card h-100">
-                    <img src="https://via.placeholder.com/300x200" class="product-image" alt="Produto 2">
-                    <div class="p-3">
-                        <h5>Produto Exemplo 2</h5>
-                        <p class="text-muted">Descrição curta do produto...</p>
-                        <div class="d-flex justify-content-between align-items-center mb-3">
-                            <span class="product-price">R$ 149,90</span>
-                            <span class="badge bg-success">Em Estoque</span>
-                        </div>
-                        <div class="d-grid gap-2">
-                            <a href="product.html" class="btn btn-primary">
-                                <i class="bi bi-eye"></i> Ver Detalhes
-                            </a>
-                            <button class="btn btn-whatsapp" onclick="buyOnWhatsApp(2)">
-                                <i class="bi bi-whatsapp"></i> Comprar pelo WhatsApp
-                            </button>
-                            <button class="btn btn-outline-primary" onclick="addToCart(2)">
-                                <i class="bi bi-cart-plus"></i> Adicionar ao Carrinho
-                            </button>
-                        </div>
-                    </div>
+    <!-- Modal do Carrinho -->
+    <div class="modal fade" id="cartModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Carrinho de Compras</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
-            </div>
-
-            <!-- Product Card -->
-            <div class="col">
-                <div class="product-card h-100">
-                    <img src="https://via.placeholder.com/300x200" class="product-image" alt="Produto 3">
-                    <div class="p-3">
-                        <h5>Produto Exemplo 3</h5>
-                        <p class="text-muted">Descrição curta do produto...</p>
-                        <div class="d-flex justify-content-between align-items-center mb-3">
-                            <span class="product-price">R$ 199,90</span>
-                            <span class="badge bg-danger">Fora de Estoque</span>
-                        </div>
-                        <div class="d-grid gap-2">
-                            <a href="product.html" class="btn btn-primary">
-                                <i class="bi bi-eye"></i> Ver Detalhes
-                            </a>
-                            <button class="btn btn-whatsapp" onclick="buyOnWhatsApp(3)">
-                                <i class="bi bi-whatsapp"></i> Comprar pelo WhatsApp
-                            </button>
-                            <button class="btn btn-outline-primary" onclick="addToCart(3)">
-                                <i class="bi bi-cart-plus"></i> Adicionar ao Carrinho
-                            </button>
-                        </div>
-                    </div>
+                <div class="modal-body" id="cartModalBody">
+                    <!-- Conteúdo será inserido via JavaScript -->
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Continuar Comprando</button>
+                    <button type="button" class="btn btn-primary" id="finishPurchaseBtn">Finalizar Compra no WhatsApp</button>
                 </div>
             </div>
         </div>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script>
-        // Função para gerenciar o carrinho no localStorage
-        function getCart() {
-            const cart = localStorage.getItem('cart');
-            return cart ? JSON.parse(cart) : [];
-        }
-
-        function saveCart(cart) {
-            localStorage.setItem('cart', JSON.stringify(cart));
-        }
-
-        function addToCart(productId) {
-            const products = {
-                1: { name: 'Produto Exemplo 1', price: '99,90', image: 'https://via.placeholder.com/100' },
-                2: { name: 'Produto Exemplo 2', price: '149,90', image: 'https://via.placeholder.com/100' },
-                3: { name: 'Produto Exemplo 3', price: '199,90', image: 'https://via.placeholder.com/100' }
-            };
-            
-            const cart = getCart();
-            const product = products[productId];
-            
-            // Verifica se o produto já está no carrinho
-            const existingItem = cart.find(item => item.id === productId);
-            
-            if (existingItem) {
-                existingItem.quantity += 1;
-            } else {
-                cart.push({
-                    id: productId,
-                    name: product.name,
-                    price: product.price,
-                    image: product.image,
-                    quantity: 1
-                });
-            }
-            
-            saveCart(cart);
-            alert('Produto adicionado ao carrinho!');
-        }
-
-        function buyOnWhatsApp(productId) {
-            const products = {
-                1: { name: 'Produto Exemplo 1', price: '99,90' },
-                2: { name: 'Produto Exemplo 2', price: '149,90' },
-                3: { name: 'Produto Exemplo 3', price: '199,90' }
-            };
-            
-            const product = products[productId];
-            const whatsappNumber = '5511999999999';
-            
-            const message = `Olá! Gostaria de comprar o produto:\n\n` +
-                          `*${product.name}*\n` +
-                          `Preço: R$ ${product.price}`;
-            
-            const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`;
-            window.open(whatsappUrl, '_blank');
-        }
-    </script>
+    <script src="js/main.js"></script>
 </body>
 </html> 

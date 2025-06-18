@@ -1,0 +1,186 @@
+:root {
+    --primary-color: #ff69b4;
+    --secondary-color: #ffb6c1;
+    --accent-color: #ffd700;
+    --text-color: #333;
+    --background-color: #f8f9fa;
+    --light-pink: #fff0f5;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: var(--background-color);
+    color: var(--text-color);
+    margin: 0;
+    padding: 0;
+}
+
+/* Tela de Login */
+.login-container {
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, var(--light-pink) 0%, var(--secondary-color) 100%);
+}
+
+.login-box {
+    background: white;
+    padding: 2rem;
+    border-radius: 15px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 400px;
+}
+
+.login-box h2 {
+    color: var(--primary-color);
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+/* Painel Administrativo */
+.admin-panel {
+    min-height: 100vh;
+}
+
+.navbar {
+    background-color: var(--primary-color) !important;
+    padding: 1rem 0;
+}
+
+.navbar-brand {
+    font-weight: bold;
+    color: white !important;
+}
+
+.nav-link {
+    color: rgba(255, 255, 255, 0.8) !important;
+    transition: color 0.3s ease;
+}
+
+.nav-link:hover {
+    color: white !important;
+}
+
+/* Seções do Admin */
+.admin-section {
+    background: white;
+    padding: 2rem;
+    border-radius: 15px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin-bottom: 2rem;
+}
+
+.admin-section h2 {
+    color: var(--primary-color);
+    margin-bottom: 1.5rem;
+}
+
+/* Tabela de Produtos */
+.table {
+    margin-top: 1rem;
+}
+
+.table th {
+    background-color: var(--light-pink);
+    color: var(--text-color);
+    font-weight: 600;
+}
+
+.table td {
+    vertical-align: middle;
+}
+
+.product-image-preview {
+    width: 60px;
+    height: 60px;
+    object-fit: cover;
+    border-radius: 8px;
+}
+
+/* Grid de Banners */
+.banner-card {
+    position: relative;
+    margin-bottom: 1.5rem;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.banner-image {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+}
+
+.banner-actions {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    display: flex;
+    gap: 0.5rem;
+}
+
+/* Configurações */
+#currentLogo {
+    max-width: 200px;
+    margin-bottom: 1rem;
+}
+
+/* Botões */
+.btn-primary {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+}
+
+.btn-primary:hover {
+    background-color: var(--secondary-color);
+    border-color: var(--secondary-color);
+}
+
+.btn-danger {
+    background-color: #dc3545;
+    border-color: #dc3545;
+}
+
+.btn-danger:hover {
+    background-color: #c82333;
+    border-color: #bd2130;
+}
+
+/* Modais */
+.modal-content {
+    border-radius: 15px;
+    border: none;
+}
+
+.modal-header {
+    background-color: var(--light-pink);
+    border-bottom: none;
+}
+
+.modal-title {
+    color: var(--primary-color);
+}
+
+/* Formulários */
+.form-control:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 0.2rem rgba(255, 105, 180, 0.25);
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+    .admin-section {
+        padding: 1rem;
+    }
+
+    .banner-image {
+        height: 150px;
+    }
+
+    .table-responsive {
+        margin: 0 -1rem;
+    }
+} 
